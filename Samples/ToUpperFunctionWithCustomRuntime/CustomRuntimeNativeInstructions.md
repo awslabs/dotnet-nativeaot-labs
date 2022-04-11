@@ -4,7 +4,7 @@ These instructions will walk you through how to generate, deploy, and test a sim
 
 ## Set Up the Sample Function Code
 
-If you haven't already, install the prerequisites from the main [README](../../README.md)
+If you haven't already, install the prerequisites from the main [README](../../README.md#prerequisites)
 
 For now, to work with native code, we will need to deploy our Lambda as a custom runtime. This is because there is currently no Lambda-managed .NET NativeAOT runtime. To generate a simple function with a custom runtime, from the command line, run `dotnet new lambda.CustomRuntimeFunction`
 
