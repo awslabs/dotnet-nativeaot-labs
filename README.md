@@ -16,7 +16,7 @@ While currently still experimental, .NET NativeAOT is expected to be moved into 
 
 ### Faster Cold Starts
 
-In our experience, the biggest benefit of compiling directly to a native binary is speeding up the cold start time of an application. When a IL compiled application runs in the CLR, it needs time to compile Just-In-Time. When run natively there is no JITing. In a serverless function like Lambda, cold start times become much more important since the function can often be spinning up and down.
+In our experience, the biggest benefit of compiling directly to a native binary is speeding up the cold start time of an application. We've seen average reduction in cold start times from 20% up to 70% depending on the code. When a IL compiled application runs in the CLR, it needs time to compile Just-In-Time. When run natively there is no JITing. In a serverless function like Lambda, cold start times become much more important since the function can often be spinning up and down.
 
 ## How can I try it?
 
@@ -33,7 +33,7 @@ In our experience, the biggest benefit of compiling directly to a native binary 
 
 Once you have the prerequisites, follow one of the examples below to deploy your own NativeAOT Lambda.
 
-1. [Lambda Hello World -ToUpper](Samples\ToUpperFunctionWithCustomRuntime\CustomRuntimeNativeInstructions.md)
+1. [Lambda Hello World -ToUpper](Samples/ToUpperFunctionWithCustomRuntime/CustomRuntimeNativeInstructions.md)
 
 ## Have issues or suggestions?
 
