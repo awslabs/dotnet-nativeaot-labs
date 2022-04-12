@@ -8,7 +8,7 @@ We want to use this repository to gather community feedback and questions about 
 
 At a high level, NativeAOT for .NET is a way to compile your .NET projects directly to machine code, eliminating the Intermediary Language and Just-In-Time compilation. AOT stands for "Ahead of Time", as opposed to "Just in Time". While compiling this way gives less flexibility, it has the ability to improve performance, especially at startup.
 
-While currently still experimental, .NET NativeAOT is expected to be moved into the main .NET runtime as part of [.NET 7](https://github.com/dotnet/runtime/issues/61231).
+While currently still experimental, NativeAOT is expected to be moved into the main .NET runtime as part of [.NET 7](https://github.com/dotnet/runtime/issues/61231).
 
 .NET NativeAOT is based off of the previous [CoreRT repository](https://github.com/dotnet/corert).
 
@@ -20,7 +20,17 @@ In our experience, the biggest benefit of compiling directly to a native binary 
 
 ## How can I try it?
 
-### Prerequisites
+Check out some of our pre-built samples or continue below for steps to create a native Lambda from scratch.
+
+1. [Simple Function With Custom Runtime](Samples/SimpleFunctionWithCustomRuntime/README.md)
+1. [Build and Run with Containers](Samples/BuildAndRunWithContainers/README.md)
+1. [ASP.NET Core Web API](Samples/ASP.NETCoreWebAPI/README.md)
+
+# Building .NET NativeAOT Lambda From Scratch
+
+These instructions will walk you through how to generate, deploy, and test a simple .NET native Lambda Function. The end result should be similar to the [Simple Function With Custom Runtime](Samples/SimpleFunctionWithCustomRuntime/README.md) sample.
+
+## Prerequisites
 
 1. [.NET 6 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0). NativeAOT is only supported on .NET 6 and greater.
 1. [Amazon Linux 2](https://aws.amazon.com/amazon-linux-2/?amazon-linux-whats-new.sort-by=item.additionalFields.postDateTime&amazon-linux-whats-new.sort-order=desc). If building for Lambda, you'll need to create the binaries on Linux since cross-OS compilation is not supported with NativeAOT. Using an EC2 instance running Amazon Linux 2 is recommended for building .NET NativeAOT Lambda functions, although we hope to make compiling in containers easier in the future. Other distributions of Linux *may* work, but will probably have compatibility issues with Lambda since Lambda runs on Amazon Linux.
@@ -29,18 +39,6 @@ In our experience, the biggest benefit of compiling directly to a native binary 
 1. [.NET Global Lambda Tools for AWS](https://aws.amazon.com/blogs/developer/net-core-global-tools-for-aws/) For deploying and invoking your lambda. (installed with `dotnet tool install -g Amazon.Lambda.Tools`)
 1. [AWS Visual Studio Toolkit](https://aws.amazon.com/visualstudio/) If using Visual Studio.
 1. It may also be helpful to read these documents from the .NET repositories and build a local console app before moving on to Lambda: [Using Native AOT](https://github.com/dotnet/runtimelab/blob/feature/NativeAOT/docs/using-nativeaot/README.md)
-
-### .NET NativeAOT Lambda Samples
-
-Check out some of our pre-built samples or continue below for steps to create a native Lambda from scratch.
-
-1. [Simple Function With Custom Runtime](Samples/SimpleFunctionWithCustomRuntime/README.md)
-1. [BuildAndDeployWithContainers](Samples/BuildAndDeployWithContainers/README.md)
-1. [ASP.NETCoreWebAPI](Samples/ASP.NETCoreWebAPI/README.md)
-
-# Building .NET NativeAOT Lambda From Scratch
-
-These instructions will walk you through how to generate, deploy, and test a simple .NET native Lambda Function. The end result should be similar to the [Simple Function With Custom Runtime](Samples/SimpleFunctionWithCustomRuntime/README.md) sample.
 
 ## Set Up the Sample Function Code
 
