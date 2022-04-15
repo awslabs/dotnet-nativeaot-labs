@@ -58,28 +58,10 @@ There are some parts of the csproj worth understanding.
 
 ## Converting to Native
 
-For a simple function like this, converting to native only takes a few simple steps.
+For a simple function like this, converting to native only takes 2 simple steps.
 
-### 1) Remove PublishReadyToRun from csproj
-
-Edit the csproj and remove the line with PublishReadyToRun. Also remove the PublishReadyToRun comment. This isn't needed, and is an alterative compilation mode to NativeAOT.
-
-### 2) Add the experimental NuGet feed
-
-[As documented by Microsoft](https://github.com/dotnet/runtimelab/blob/feature/NativeAOT/docs/using-nativeaot/compiling.md#add-ilcompiler-package-reference). In order to use the currently experimental IL Compiler to compile natively, we need to use the experimental NuGet feed. In the same directory as the csproj, create a file called 'nuget.config' and inside paste the below XML. This will add a new NuGet feed called dotnet-experimental while maintaining your existing NuGet feeds too. If NativeAOT is officially brought into .NET 7, this step will probably change.
-
-```XML
-<?xml version="1.0" encoding="utf-8"?>
-<configuration>
- <packageSources>
-    <add key="dotnet-experimental" value="https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-experimental/nuget/v3/index.json" />
- </packageSources>
-</configuration>
-```
-
-### 3) Referencing the experimental ILCompiler package from the experimental nuget feed
-
-Now we can reference the NuGet package `Microsoft.DotNet.ILCompiler -v 7.0.0-*`. In your csproj add the below PackageReference along with the other already existing PackageReferences.
+1. Edit the csproj and remove the line with PublishReadyToRun. Also remove the PublishReadyToRun comment. This isn't needed, and is an alterative compilation mode to NativeAOT.
+1. Reference the NuGet package [Microsoft.DotNet.ILCompiler](https://www.nuget.org/packages/Microsoft.DotNet.ILCompiler/). In your csproj add the below PackageReference along with the other already existing PackageReferences or run this command from the same directory as your csproj `dotnet add package Microsoft.DotNet.ILCompiler --prerelease`
 
 ```XML
     <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.0-*" />
