@@ -33,12 +33,12 @@ These instructions will walk you through how to generate, deploy, and test a sim
 ## Prerequisites
 
 1. [.NET 6 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0). NativeAOT is only supported on .NET 6 and greater.
-1. [Amazon Linux 2](https://aws.amazon.com/amazon-linux-2/?amazon-linux-whats-new.sort-by=item.additionalFields.postDateTime&amazon-linux-whats-new.sort-order=desc). If building for Lambda, you'll need to create the binaries on Linux since cross-OS compilation is not supported with NativeAOT. Using an EC2 instance running Amazon Linux 2 is recommended for building .NET NativeAOT Lambda functions, although we hope to make compiling in containers easier in the future. Other distributions of Linux *may* work, but will probably have compatibility issues with Lambda since Lambda runs on Amazon Linux.
 1. [AWS CLI](https://aws.amazon.com/cli/) For easy management of AWS resources from the command line. Make sure to [initialize your credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
 1. [Dotnet Amazon Lambda Templates](https://docs.aws.amazon.com/lambda/latest/dg/csharp-package-cli.html) For creating dotnet lambda projects from the command line. (installed with `dotnet new -i Amazon.Lambda.Templates`)
 1. [.NET Global Lambda Tools for AWS](https://aws.amazon.com/blogs/developer/net-core-global-tools-for-aws/) For deploying and invoking your lambda. (installed with `dotnet tool install -g Amazon.Lambda.Tools`)
-1. [AWS Visual Studio Toolkit](https://aws.amazon.com/visualstudio/) If using Visual Studio.
-1. It may also be helpful to read these documents from the .NET repositories and build a local console app before moving on to Lambda: [Using Native AOT](https://github.com/dotnet/runtimelab/blob/feature/NativeAOT/docs/using-nativeaot/README.md)
+1. [Amazon Linux 2](https://aws.amazon.com/amazon-linux-2/?amazon-linux-whats-new.sort-by=item.additionalFields.postDateTime&amazon-linux-whats-new.sort-order=desc). If building for Lambda, you'll need to create the binaries on Linux since cross-OS compilation is not supported with NativeAOT. We recommend using AL2 for compatibility with Lambda. You can either use an EC2 instance running AL2 or a Docker container running AL2 (see container sample) or [Amazon Linux 2 for WSL2](https://aws.amazon.com/blogs/developer/developing-on-amazon-linux-2-using-windows/).
+1. (Optional) [AWS Visual Studio Toolkit](https://aws.amazon.com/visualstudio/) If using Visual Studio.
+1. (Optional) It may also be helpful to read these documents from the .NET repositories and build a local console app before moving on to Lambda: [Using Native AOT](https://github.com/dotnet/runtimelab/blob/feature/NativeAOT/docs/using-nativeaot/README.md)
 
 ## Set Up the Sample Function Code
 
@@ -99,7 +99,7 @@ Optional: Delete the bin and obj directories from your main project folder as we
 
 ### Compiling for Lambda
 
-To compile a binary suitable to deploy to AWS Lambda, we will need to build on Amazon Linux 2. This will make sure our binary is built for the correct operating system and architecture and that all the correct native libraries are included. In the future, we hope to have an easy containerized build, but for now, we can just spin up an Amazon Linux 2 EC2 instance to do our publish.
+To compile a binary suitable to deploy to AWS Lambda, we will need to build on Amazon Linux 2. This will make sure our binary is built for the correct operating system and architecture and that all the correct native libraries are included. For now, we will just spin up an Amazon Linux 2 EC2 instance to do our publish. If you're on Windows, you can instead use [Amazon Linux 2 for WSL2](https://aws.amazon.com/blogs/developer/developing-on-amazon-linux-2-using-windows/). You can also check out the [Contains sample](/Samples/BuildAndRunWithContainers/README.ms) to use Docker containers for publishing and/or running.
 
 1. Create an EC2 instance that uses kernel `5.*` and architecture `64-bit (x86)`. If unsure on instance type, you can use a `t2.xlarge`. **Don't forget to terminate or stop it when done to prevent unnecessary costs.**
 1. Download this source code to that instance (git example below, but scp or others methods work too)
