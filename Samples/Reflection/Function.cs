@@ -4,7 +4,7 @@ using Amazon.Lambda.Serialization.SystemTextJson;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace CustomRuntime;
+namespace Reflection;
 
 public class Function
 {
