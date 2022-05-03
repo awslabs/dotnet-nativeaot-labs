@@ -8,6 +8,6 @@ One thing that often requires a lot of reflection is JSON serialization. Luckily
 
 To deploy this code, just run `dotnet lambda deploy-function --function-name reflectionTestNativeAOT`
 
-And then test the deployed function with this command (updated for your function ARN) `dotnet lambda invoke-function arn:aws:lambda:us-east-1:1234567890:function:reflectionTestNativeAOT --payload "Hello World"`
+And then test the deployed function with this command (updated for your function ARN, you can use `aws lambda list-functions` to see all your function ARNs) `dotnet lambda invoke-function arn:aws:lambda:us-east-1:1234567890:function:reflectionTestNativeAOT --payload "Hello World"`
 
 You can see that we implement a custom JsonSerializerContext which allows us to deserialize our object without hitting a `MissingMetadataException` at runtime.
