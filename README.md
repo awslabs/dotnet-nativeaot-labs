@@ -81,7 +81,7 @@ Optional: Delete the bin and obj directories from your main project folder as we
 
 ### Compiling for Lambda
 
-To compile a binary suitable to deploy to AWS Lambda, we will need to build on Amazon Linux 2. This will make sure our binary is built for the correct operating system and architecture and that all the correct native libraries are included. For now, we will just spin up an Amazon Linux 2 EC2 instance to do our publish. If you're on Windows, you can instead use [Amazon Linux 2 for WSL2](https://aws.amazon.com/blogs/developer/developing-on-amazon-linux-2-using-windows/). You can also check out the [Contains sample](/Samples/BuildAndRunWithContainers/README.ms) to use Docker containers for publishing and/or running.
+To compile a binary suitable to deploy to AWS Lambda, we will need to build on Amazon Linux 2. This will make sure our binary is built for the correct operating system and architecture and that all the correct native libraries are included. For now, we will just spin up an Amazon Linux 2 EC2 instance to do our publish. If you're on Windows, you can instead use [Amazon Linux 2 for WSL2](https://aws.amazon.com/blogs/developer/developing-on-amazon-linux-2-using-windows/), but you will need to enable CPU virtualization in your BIOS if you haven't already. You can also check out the [Contains sample](/Samples/BuildAndRunWithContainers/README.ms) to use Docker containers for publishing and/or running.
 
 1. Create an EC2 instance that uses kernel `5.*` and architecture `64-bit (x86)`. If unsure on instance type, you can use a `t2.xlarge`. **Don't forget to terminate or stop it when done to prevent unnecessary costs.**
 1. Download this source code to that instance (git example below, but scp or others methods work too)
@@ -93,7 +93,7 @@ To compile a binary suitable to deploy to AWS Lambda, we will need to build on A
     * Install the .NET 6 SDK
     * `sudo yum install dotnet-sdk-6.0`
 1. Install build dependencies
-    * `sudo yum -y install clang krb5-devel openssl-devel`
+    * `sudo yum -y install clang krb5-devel openssl-devel zip`
 1. Navigate into the directory that contains your csproj
 1. Do the publish (file will be built to bin/release/net6.0/linux-x64/native/)
     * `dotnet publish -r linux-x64 -c release --self-contained`
