@@ -1,43 +1,28 @@
 # Build and/or Run with Containers
 
-This sample's code performs the same function as the [SimpleFunctionWithCustomRuntime](../SimpleFunctionWithCustomRuntime/), however we've also included 2 docker files which can give you the ability to build with and/or run on a container in Lambda.
+This sample's code performs the same function as the [SimpleFunctionWithCustomRuntime](../SimpleFunctionWithCustomRuntime/), however we've also included 2 docker files. The first allows you to build on an AL2 docker container, preventing the need to spin up a whole AL2 VM. The second will both build your native code and also run it hosted in a container in Lambda. Before using the images below, you will need to [Authenticate your Docker client to the Amazon Linux Public registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/amazon_linux_container_image.html). You can also get the login command by navigating to your own AWS ECR repository and then clicking 'View push commands'.
 
 ## Build Only
 
 Since it is likely that your main development machine isn't running Amazon Linux 2 and cross-OS compilation is not supported, you can instead compile your linux-native code on a [Docker](https://www.docker.com/) container running Amazon Linux 2.
 
-To build your Lambda bootstrap file on Amazon Linux 2 inside Docker, run this command inside the same directory as the docker files: 
+To build your Lambda bootstrap file on Amazon Linux 2 inside Docker, run the below command inside the directory that contains your csproj and the docker file. Make sure you've set AssemblyName to 'bootstrap' since that is what the docker file is looking for: 
 
-```DOCKER
+```BASH
 docker build -t build-only-image -f DockerfileBuildOnly .
 ```
 
 (you can change the tag `build-only-image` to whatever you want)
 
-Now to extract the bootstrap file from the container, run the newly created image and then run 
+Now to extract the zipped up bootstrap file from the container, run the newly created image in Docker and then run this command
 
-```
-docker cp {randomly created container name}:/source/bin/Release/net6.0/linux-x64/native/bootstrap .
-```
-
- (e.g. `docker cp vibrant_chatelet:/source/bin/Release/net6.0/linux-x64/native/bootstrap .`)
-
-After that, you should see a file called bootstrap that is about 20MB in the same directory that you ran the command from.
-
-**Now you can manually zip up the bootstrap file or include it in another docker file to deploy it to Lambda!**
-
-If you want to zip up the file right after building it add the follow 2 lines to the end of `DockerfileBuildOnly`
-
-```DOCKER
-RUN cp /source/bin/Release/net6.0/linux-x64/native/bootstrap bootstrap
-RUN zip package.zip bootstrap
-```
-
-And then to extract the zip instead of the bootstrap file after running the image:
-
-```DOCKER
+```BASH
 docker cp {randomly created container name}:/source/package.zip .
 ```
+
+ (e.g. `docker cp vibrant_chatelet:/source/package.zip .`)
+
+After that, you should see a file called package.zip in the same directory that you ran the command from.
 
 ## Build And Run
 
