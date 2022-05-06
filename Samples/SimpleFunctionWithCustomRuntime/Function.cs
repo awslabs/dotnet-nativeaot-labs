@@ -10,7 +10,7 @@ public class Function
     /// The main entry point for the custom runtime.
     /// </summary>
     /// <param name="args"></param>
-    private static async Task Main(string[] args)
+    private static async Task Main()
     {
         Func<string, ILambdaContext, string> handler = FunctionHandler;
         await LambdaBootstrapBuilder.Create(handler, new DefaultLambdaJsonSerializer())
