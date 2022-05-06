@@ -1,0 +1,74 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32228.343
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{79314ACF-1A57-4E21-BD24-38EBF5819944}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{DBAD5905-4237-42F6-B523-F9126D68F6F4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildAndRunWithContainers", "BuildAndRunWithContainers", "{04BB5BF2-DB32-46E8-AC5C-E86BEE54D823}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomRuntime", "Samples\BuildAndRunWithContainers\CustomRuntime.csproj", "{EA0F43A5-C0AC-4B82-A741-44361D8480FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reflection", "Reflection", "{5757D8A4-01E0-4709-9F06-8D4C166D8329}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reflection", "Samples\Reflection\Reflection.csproj", "{E4DB7129-71AB-4649-999A-A6713BA9A577}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleFunctionWithCustomRuntime", "SimpleFunctionWithCustomRuntime", "{A6588A49-45B6-4FC5-AB45-3902D236852B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomRuntime", "Samples\SimpleFunctionWithCustomRuntime\CustomRuntime.csproj", "{795D66F1-6EF4-4477-9BD2-924274C1A296}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LambdaToNativeAotConverter", "LambdaToNativeAotConverter", "{30E55CF9-6821-487E-8DA5-35E83B96EE4A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LambdaToNativeAotConverter", "Tools\LambdaToNativeAotConverter\LambdaToNativeAotConverter.csproj", "{8883CE90-FF02-49E4-A05D-9944981A2123}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solution Items", "{A4DC4921-BA39-47FE-AF7B-06E7747D743B}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
+		CONTRIBUTING.md = CONTRIBUTING.md
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA0F43A5-C0AC-4B82-A741-44361D8480FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA0F43A5-C0AC-4B82-A741-44361D8480FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA0F43A5-C0AC-4B82-A741-44361D8480FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA0F43A5-C0AC-4B82-A741-44361D8480FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4DB7129-71AB-4649-999A-A6713BA9A577}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4DB7129-71AB-4649-999A-A6713BA9A577}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4DB7129-71AB-4649-999A-A6713BA9A577}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4DB7129-71AB-4649-999A-A6713BA9A577}.Release|Any CPU.Build.0 = Release|Any CPU
+		{795D66F1-6EF4-4477-9BD2-924274C1A296}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{795D66F1-6EF4-4477-9BD2-924274C1A296}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{795D66F1-6EF4-4477-9BD2-924274C1A296}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{795D66F1-6EF4-4477-9BD2-924274C1A296}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8883CE90-FF02-49E4-A05D-9944981A2123}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8883CE90-FF02-49E4-A05D-9944981A2123}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8883CE90-FF02-49E4-A05D-9944981A2123}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8883CE90-FF02-49E4-A05D-9944981A2123}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{04BB5BF2-DB32-46E8-AC5C-E86BEE54D823} = {DBAD5905-4237-42F6-B523-F9126D68F6F4}
+		{EA0F43A5-C0AC-4B82-A741-44361D8480FB} = {04BB5BF2-DB32-46E8-AC5C-E86BEE54D823}
+		{5757D8A4-01E0-4709-9F06-8D4C166D8329} = {DBAD5905-4237-42F6-B523-F9126D68F6F4}
+		{E4DB7129-71AB-4649-999A-A6713BA9A577} = {5757D8A4-01E0-4709-9F06-8D4C166D8329}
+		{A6588A49-45B6-4FC5-AB45-3902D236852B} = {DBAD5905-4237-42F6-B523-F9126D68F6F4}
+		{795D66F1-6EF4-4477-9BD2-924274C1A296} = {A6588A49-45B6-4FC5-AB45-3902D236852B}
+		{30E55CF9-6821-487E-8DA5-35E83B96EE4A} = {79314ACF-1A57-4E21-BD24-38EBF5819944}
+		{8883CE90-FF02-49E4-A05D-9944981A2123} = {30E55CF9-6821-487E-8DA5-35E83B96EE4A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0214490E-D7F5-4E5E-AB55-CB35E930AAAE}
+	EndGlobalSection
+EndGlobal

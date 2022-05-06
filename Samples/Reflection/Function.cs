@@ -1,6 +1,7 @@
 using Amazon.Lambda.Core;
 using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.SystemTextJson;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -19,12 +20,13 @@ public class Function
             .RunAsync();
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "We use MyCustomJsonSerializerContext to make sure this type can be deserialized.")]
     public static string FunctionHandler(string input, ILambdaContext context)
     {
         var serializedObjectString = "{\"Name\":\"MyName\",\"CreatedDate\":\"2022-04-15T21:25:04.637464+00:00\"}";
 
-        SampleItemWithProperties deserializedObject = JsonSerializer.Deserialize<SampleItemWithProperties>(serializedObjectString);
-        return "Your input: " + input.ToUpper() + $"; deserializedObject Name: {deserializedObject.Name}" + $"; deserializedObject CreatedDate: {deserializedObject.CreatedDate}";
+        SampleItemWithProperties? deserializedObject = JsonSerializer.Deserialize<SampleItemWithProperties>(serializedObjectString);
+        return "Your input: " + input.ToUpper() + $"; deserializedObject Name: {deserializedObject?.Name}" + $"; deserializedObject CreatedDate: {deserializedObject?.CreatedDate}";
     }
 }
 

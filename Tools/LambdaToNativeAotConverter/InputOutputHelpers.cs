@@ -1,0 +1,57 @@
+﻿internal static class InputOutputHelpers
+{
+    public static void WriteError(string message)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(message);
+        Console.ResetColor();
+    }
+
+    public static string GetCsProjPath()
+    {
+        string? csprojPath = null;
+        while (csprojPath == null)
+        {
+            Console.WriteLine("Enter full path to .csproj file (i.e. 'C:\\Code\\MyRepo\\MyProject\\MyProject.csproj'");
+            csprojPath = Console.ReadLine()?.Trim('"').Trim('\'').Trim(' ');
+        }
+
+        if (!File.Exists(csprojPath))
+        {
+            WriteError("No file found that coresponds to given csproj path, please check file exists.");
+            Environment.Exit(1);
+        }
+
+        if (!csprojPath.ToLowerInvariant().EndsWith(".csproj"))
+        {
+            WriteError("Given csproj path does not end with '.csproj' make sure a valid csproj file was given.");
+            Environment.Exit(1);
+        }
+
+        return csprojPath;
+    }
+
+    public static string GetFunctionHandler()
+    {
+        string? functionHandler = null;
+        while (functionHandler == null)
+        {
+            Console.WriteLine("Enter function handler method's fully qualified name (with namespace i.e. 'MyProject.MyHandler.Handle'");
+            functionHandler = Console.ReadLine()?.Trim('"').Trim('\'').Trim(' ');
+        }
+
+        return functionHandler;
+    }
+
+    public static string GetFunctionHandlerPath()
+    {
+        string? functionHandlerPath = null;
+        while (functionHandlerPath == null)
+        {
+            Console.WriteLine("Enter path to cs file that contains your function handler (i.e. 'C:\\Code\\MyRepo\\MyProject\\Handler.cs'");
+            functionHandlerPath = Console.ReadLine()?.Trim('"').Trim('\'').Trim(' ');
+        }
+
+        return functionHandlerPath;
+    }
+}
