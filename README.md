@@ -113,7 +113,7 @@ To compile a binary suitable to deploy to AWS Lambda, we will need to build on A
     * You can manually upload the zip file through the AWS Web Console
     * Or if you have the AWS CLI installed and a profile configured on your build machine, you can run the below command after updating the function-name parameter.
         * `aws lambda update-function-code --function-name arn:aws:lambda:us-east-1:123456789:function:myAwesomeNativeFunction --zip-file fileb://package.zip`
-
+1. You can also instead deploy with [.NET Global Lambda Tools for AWS](https://aws.amazon.com/blogs/developer/net-core-global-tools-for-aws/) (see [SimpleFunctionWithCustomRuntime](/Samples/SimpleFunctionWithCustomRuntime/README.md) for example) but that will not yet strip your executable and will zip up extra files leading to increased package size. We hope to improve that in the future.
 ## Testing your function
 
 For this sample, you can easily test the function from the AWS Web Console by navigating to the function, then going into the 'Test' tab, then entering a test string like `"Hello World"` into the 'Event JSON' section, then clicking 'Test'.

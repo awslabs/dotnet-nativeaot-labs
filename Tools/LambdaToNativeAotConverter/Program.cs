@@ -31,6 +31,7 @@
         ProjectModificationHelpers.AddEntryPoint(functionHandlerPath, functionHandler);
         ProjectModificationHelpers.AddLambdaToolsDefaults(csprojPath);
 
-        return;
+        InputOutputHelpers.WriteSuccess("Your function is finished converting!");
+        InputOutputHelpers.WriteSuccess("Make sure you build and deploy it from Amazon Linux 2 (You can use a VM, Docker, or WSL). You should be able to deploy it with the command 'dotnet lambda deploy-function --function-name MyConvertedNativeFunction --config-file aws-lambda-tools-defaults.json'");
     }
 }

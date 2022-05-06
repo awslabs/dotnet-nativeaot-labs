@@ -52,10 +52,18 @@ internal class ProjectModificationHelpers
             handlerType = $"Func<{string.Join(',', parameterTypes)}, {returnType}>";
         }
 
+        var fullHandlerNameParts = handlerName.Split('.');
+        var handlerShortMethodName = fullHandlerNameParts.Last();
+        var handlerFullClassName = string.Join('.', fullHandlerNameParts.Reverse().Skip(1).Reverse());
+
+        var handlerInstance = $" new {handlerFullClassName}()." + handlerShortMethodName;
+
         var fileContent = $@"
 using Amazon.Lambda.Core;
 using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.SystemTextJson;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace UpdateThisToYourOwnNamespace
 {{
@@ -66,14 +74,15 @@ namespace UpdateThisToYourOwnNamespace
         /// </summary>
         private static async Task Main()
         {{
-            var lambdaBootstrap = LambdaBootstrapBuilder.Create(({handlerType}){handlerName}, new DefaultLambdaJsonSerializer())
+            // If this line has build errors, you may need to instantiate your handler's class with the appropriate constructor arguments, or if your handler is static, reference it statically instead of newing it up
+            var lambdaBootstrap = LambdaBootstrapBuilder.Create(({handlerType}){handlerInstance}, new DefaultLambdaJsonSerializer())
                 .Build();
 
             await lambdaBootstrap.RunAsync();
         }}
     }}
 
-    [JsonSerializable(typeof({handlerName}))] // This is just an example, replace this (and add more attributes) with types that you need to use with JSON serialization 
+    [JsonSerializable(typeof(DateTimeOffset?))] // This is just an example, replace this (and add more attributes) with types that you need to use with JSON serialization 
     public partial class MyCustomJsonSerializerContext : JsonSerializerContext
     {{
         // By using this partial class derived from JsonSerializerContext, we can generate reflection free JSON Serializer code at compile time
@@ -114,7 +123,7 @@ namespace UpdateThisToYourOwnNamespace
         if (File.Exists(pathToToolsDefaults))
         {
             File.Copy(pathToToolsDefaults, pathToToolsDefaults + "-old.json");
-            InputOutputHelpers.WriteError("It looks like you already had a aws-lambda-tools-defaults.json file. It's been renamed to aws-lambda-tools-defaults.json-old.json, please merge it with the new NativeAOT-compatible file that has replaced it. " +
+            InputOutputHelpers.WriteWarning("It looks like you already had a aws-lambda-tools-defaults.json file. It's been renamed to aws-lambda-tools-defaults.json-old.json, please merge it with the new NativeAOT-compatible file that has replaced it. " +
                 "For NativeAOT, you will need to keep these settings as-is function-runtime:provided.al2, function-handler:bootstrap, msbuild-parameters:--self-contained true");
         }
 
