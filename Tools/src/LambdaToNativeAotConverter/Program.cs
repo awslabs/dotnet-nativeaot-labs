@@ -28,7 +28,7 @@
         ProjectModificationHelpers.AddPackage(csprojPath, "Amazon.Lambda.RuntimeSupport");
 
         // Add new files that are needed
-        ProjectModificationHelpers.AddEntryPoint(functionHandlerPath, functionHandler);
+        ProjectModificationHelpers.AddEntryPoint(csprojPath, functionHandlerPath, functionHandler);
         ProjectModificationHelpers.AddLambdaToolsDefaults(csprojPath);
 
         InputOutputHelpers.WriteSuccess("Your function is finished converting!");

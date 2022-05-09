@@ -50,7 +50,7 @@
         string? functionHandler = null;
         while (functionHandler == null)
         {
-            Console.WriteLine("Enter function handler method's fully qualified name (with namespace i.e. 'MyProject.MyHandler.Handle'");
+            Console.WriteLine("Enter function handler method's fully qualified name (with namespace i.e. 'MyNamespace.MyClass.MyHandler'");
             functionHandler = Console.ReadLine()?.Trim('"').Trim('\'').Trim(' ');
         }
 
