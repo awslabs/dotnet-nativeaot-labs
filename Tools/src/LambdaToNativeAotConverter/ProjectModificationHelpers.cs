@@ -3,7 +3,7 @@ using System.Xml;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Diagnostics;
-using LambdaToNativeAotConverter;
+
 namespace LambdaToNativeAotConverter
 {
     public static class ProjectModificationHelpers
@@ -12,7 +12,7 @@ namespace LambdaToNativeAotConverter
         public static void AddPackage(string csprojPath, string package)
         {
             var addIlProcess = Process.Start("dotnet", $"add \"{csprojPath}\" package {package}");
-            if (!addIlProcess.WaitForExit(60000) || addIlProcess.ExitCode != 0)
+            if (!addIlProcess.WaitForExit(Constants.DotnetTimeoutMilliseconds) || addIlProcess.ExitCode != 0)
             {
                 InputOutputHelpers.WriteError($"Failed to add package {package} to csproj at {csprojPath}, please add manually with 'dotnet add package {package}'");
             }

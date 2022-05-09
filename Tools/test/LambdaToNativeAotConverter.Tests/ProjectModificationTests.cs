@@ -67,7 +67,7 @@ namespace LambdaToNativeAotConverter.Tests
             var tempCsProjPathForTestingBuild = Path.Combine(tempFilePath, "MyProject.csproj");
             File.WriteAllText(tempCsProjPathForTestingBuild, File.ReadAllText("SampleLambdaExeCsProj.txt"));
             var addIlProcess = Process.Start("dotnet", $"build \"{tempCsProjPathForTestingBuild}\"");
-            addIlProcess.WaitForExit(30000);
+            addIlProcess.WaitForExit(Constants.DotnetTimeoutMilliseconds);
             Assert.Equal(0, addIlProcess.ExitCode);
         }
 

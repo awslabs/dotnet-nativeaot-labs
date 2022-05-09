@@ -2,6 +2,7 @@
 {
     public static class Constants
     {
+        public const int DotnetTimeoutMilliseconds = 60000;
         public const string NewEntryPointFileName = "EntryPoint.cs";
         public const string DefaultLambdaToolsConfigFileName = "aws-lambda-tools-defaults.json";
         public const string BackupLambdaToolsConfigFileName = "aws-lambda-tools-defaults-backup.json";
