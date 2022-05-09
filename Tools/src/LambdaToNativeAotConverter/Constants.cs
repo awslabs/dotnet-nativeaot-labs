@@ -2,7 +2,11 @@
 {
     public static class Constants
     {
-        public static string LambdaToolsDefaultContent = @"
+        public const string NewEntryPointFileName = "EntryPoint.cs";
+        public const string DefaultLambdaToolsConfigFileName = "aws-lambda-tools-defaults.json";
+        public const string BackupLambdaToolsConfigFileName = "aws-lambda-tools-defaults-backup.json";
+
+        public const string LambdaToolsDefaultContent = @"
 {
   ""Information"": [
     ""This file provides default values for the deployment wizard inside Visual Studio and the AWS Lambda commands added to the .NET Core CLI."",
@@ -21,7 +25,7 @@
   ""msbuild-parameters"": ""--self-contained true""
 }
 ";
-        public static string EntryPointContent = @"
+        public const string EntryPointContent = @"
 using Amazon.Lambda.Core;
 using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.SystemTextJson;

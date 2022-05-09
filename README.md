@@ -20,7 +20,9 @@ In our experience, the biggest benefit of compiling directly to a native binary 
 
 ## How can I try it?
 
-Check out some of our pre-built samples or continue below for steps to create a native Lambda from scratch.
+Check out some of our pre-built samples, use the [LambdaToNativeAotConverter](/Tools/src/LambdaToNativeAotConverter/README.md) or continue below for steps to create a native Lambda from scratch.
+
+### Samples
 
 1. [Simple Function With Custom Runtime](Samples/SimpleFunctionWithCustomRuntime/README.md)
 1. [Build and Run with Containers](Samples/BuildAndRunWithContainers/README.md)

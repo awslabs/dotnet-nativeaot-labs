@@ -34,10 +34,10 @@ namespace LambdaToNativeAotConverter.Tests
         [Theory]
         [InlineData("SampleBlankCsProj.txt")]
         [InlineData("SampleCsProjWithILCompiler.txt")]
-        public void AddPackage_AddsIfNotExists(string csprojSampleFilePartialPath)
+        public void AddPackage_AddsIfNotExists(string templatePath)
         {
             // Arrange
-            string csprojPath = CreateEmptyCsProj(csprojSampleFilePartialPath);
+            string csprojPath = CreateCsProjFromTemplate(templatePath);
             const string package = "Microsoft.DotNet.ILCompiler --prerelease";
 
             // Act
@@ -55,33 +55,83 @@ namespace LambdaToNativeAotConverter.Tests
             string handlerPath = CreateLambdaHandlerFile();
 
             // Act
-            ProjectModificationHelpers.AddEntryPoint(tempFilePath + "/sample.csproj", handlerPath, handlerName);
+            ProjectModificationHelpers.AddEntryPoint(Path.Combine(tempFilePath, "sample.csproj"), handlerPath, handlerName);
 
             // Assert
-            var expectedPath = $"{tempFilePath}/EntryPoint.cs";
+            var expectedPath = Path.Combine(tempFilePath, Constants.NewEntryPointFileName);
             Assert.True(File.Exists(expectedPath));
             var newFileContent = File.ReadAllText(expectedPath);
             Assert.Equal(ExpectedEntryPointContent, newFileContent);
 
             // Make sure it will compile
-            var tempCsProjPathForTestingBuild = $"{tempFilePath}/MyProject.csproj";
+            var tempCsProjPathForTestingBuild = Path.Combine(tempFilePath, "MyProject.csproj");
             File.WriteAllText(tempCsProjPathForTestingBuild, File.ReadAllText("SampleLambdaExeCsProj.txt"));
             var addIlProcess = Process.Start("dotnet", $"build \"{tempCsProjPathForTestingBuild}\"");
             addIlProcess.WaitForExit(30000);
             Assert.Equal(0, addIlProcess.ExitCode);
         }
 
+        [Fact]
+        public void AddLambdaToolDefaults_DoesNotOverwriteExisting()
+        {
+            // Arrange
+            var existingContent = "This is the exisiting content";
+            var defaultPath = Path.Combine(tempFilePath, Constants.DefaultLambdaToolsConfigFileName);
+            var backupPath = Path.Combine(tempFilePath, Constants.BackupLambdaToolsConfigFileName);
+            Assert.False(File.Exists(defaultPath));
+            Assert.False(File.Exists(backupPath));
+            File.WriteAllText(defaultPath, existingContent);
+
+            // Act
+            ProjectModificationHelpers.AddLambdaToolsDefaults(Path.Combine(tempFilePath, "MyProject.csproj"));
+
+            // Assert
+            Assert.True(File.Exists(backupPath));
+            Assert.Equal(existingContent, File.ReadAllText(backupPath));
+            Assert.True(File.Exists(defaultPath));
+            Assert.Equal(Constants.LambdaToolsDefaultContent, File.ReadAllText(defaultPath));
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void SetCsProjProperty_CanAddOrUpdateProperty(bool valueAlreadyExists)
+        {
+            // Arrange
+            var testPropertyName = "MyTestProperty";
+            var testPropertyValue = "MyTestValue123";
+            var afterValue =
+$@"<Project Sdk=""Microsoft.NET.Sdk"">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <{testPropertyName}>{testPropertyValue}</MyTestProperty>
+  </PropertyGroup>
+</Project>";
+            var csprojPath = CreateCsProjFromTemplate("SampleBlankCsProj.txt");
+            if (valueAlreadyExists)
+            {
+                File.WriteAllText(csprojPath, afterValue.Replace(testPropertyValue, testPropertyValue + "OtherValue"));
+            }
+
+            // Act
+            ProjectModificationHelpers.SetCsProjProperty(csprojPath, testPropertyName, testPropertyValue);
+
+            // Assert
+
+            Assert.Equal(afterValue, File.ReadAllText(csprojPath));
+        }
+
         private string CreateLambdaHandlerFile()
         {
-            var newPath = $"{tempFilePath}/FunctionHandler{new Random().Next(100000)}.cs";
+            var newPath = Path.Combine(tempFilePath, $"FunctionHandler.cs");
             File.Copy("SampleHandlerCsFile.txt", newPath);
             return newPath;
         }
 
-        private string CreateEmptyCsProj(string csprojSampleFilePartialPath)
+        private string CreateCsProjFromTemplate(string templatePath)
         {
-            var newPath = $"{tempFilePath}/{csprojSampleFilePartialPath}{new Random().Next(100000)}.csproj";
-            File.Copy(csprojSampleFilePartialPath, newPath);
+            var newPath = Path.Combine(tempFilePath, "SampleProject.csproj");
+            File.Copy(templatePath, newPath);
             return newPath;
         }
 
