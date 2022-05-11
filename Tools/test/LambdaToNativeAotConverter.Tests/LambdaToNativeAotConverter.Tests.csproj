@@ -31,7 +31,10 @@
     <None Update="SampleCsProjWithILCompiler.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SampleHandlerCsFile.txt">
+    <None Update="SampleHandlerCsFileStatic.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SampleHandlerCsFileNonStatic.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="SampleLambdaExeCsProj.txt">

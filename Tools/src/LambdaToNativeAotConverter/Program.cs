@@ -8,21 +8,26 @@
             string csprojPath;
             string functionHandler;
             string functionHandlerPath;
-            if (args.Length == 3)
+            if (args.Length == 4)
             {
-                csprojPath = args[0].Trim('"').Trim('\'').Trim(' ');
-                functionHandler = args[1].Trim('"').Trim('\'').Trim(' ');
-                functionHandlerPath = args[2].Trim('"').Trim('\'').Trim(' ');
+                if (!args[0].Trim('"').Trim('\'').Trim(' ').Equals("yes"))
+                {
+                    InputOutputHelpers.WriteError("Please make a backup or commit your project before running this program and then pass in \"yes\" for the first argument once you have.");
+                }
+                csprojPath = args[1].Trim('"').Trim('\'').Trim(' ');
+                functionHandler = args[2].Trim('"').Trim('\'').Trim(' ');
+                functionHandlerPath = args[3].Trim('"').Trim('\'').Trim(' ');
             }
             else
             {
+                InputOutputHelpers.GetConsentToUpgradeInPlace();
                 csprojPath = InputOutputHelpers.GetCsProjPath();
                 functionHandler = InputOutputHelpers.GetFunctionHandler();
                 functionHandlerPath = InputOutputHelpers.GetFunctionHandlerPath();
             }
 
             // Modify csproj
-            ProjectModificationHelpers.SetCsProjProperty(csprojPath, "OutputType", "exe");
+            var updatedToExe = ProjectModificationHelpers.SetCsProjProperty(csprojPath, "OutputType", "exe");
             ProjectModificationHelpers.SetCsProjProperty(csprojPath, "AssemblyName", "bootstrap");
 
             // Add needed packages
@@ -30,7 +35,10 @@
             ProjectModificationHelpers.AddPackage(csprojPath, "Amazon.Lambda.RuntimeSupport");
 
             // Add new files that are needed
-            ProjectModificationHelpers.AddEntryPoint(csprojPath, functionHandlerPath, functionHandler);
+            if (updatedToExe)
+            {
+                ProjectModificationHelpers.AddEntryPoint(csprojPath, functionHandlerPath, functionHandler);
+            }
             ProjectModificationHelpers.AddLambdaToolsDefaults(csprojPath);
 
             InputOutputHelpers.WriteSuccess("Your function is finished converting!");

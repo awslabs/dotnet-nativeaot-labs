@@ -7,8 +7,8 @@
         public const string DefaultLambdaToolsConfigFileName = "aws-lambda-tools-defaults.json";
         public const string BackupLambdaToolsConfigFileName = "aws-lambda-tools-defaults-backup.json";
 
-        public const string LambdaToolsDefaultContent = @"
-{
+        public const string LambdaToolsDefaultContent = 
+@"{
   ""Information"": [
     ""This file provides default values for the deployment wizard inside Visual Studio and the AWS Lambda commands added to the .NET Core CLI."",
     ""To learn more about the Lambda commands with the .NET Core CLI execute the following command at the command line in the project root directory."",
@@ -24,10 +24,9 @@
   ""function-timeout"": 30,
   ""function-handler"": ""bootstrap"",
   ""msbuild-parameters"": ""--self-contained true""
-}
-";
-        public const string EntryPointContent = @"
-using Amazon.Lambda.Core;
+}";
+        public const string EntryPointContent =
+@"using Amazon.Lambda.Core;
 using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using System.Text.Json;
@@ -42,8 +41,8 @@ namespace UpdateThisToYourOwnNamespace
         /// </summary>
         private static async Task Main()
         {{
-            // If this line has build errors, you may need to instantiate your handler's class with the appropriate constructor arguments, or if your handler is static, reference it statically instead of newing it up
-            var lambdaBootstrap = LambdaBootstrapBuilder.Create(({0}){1}, new DefaultLambdaJsonSerializer())
+            // If this line has build errors, you may need to instantiate your handler's class with the appropriate constructor arguments
+            var lambdaBootstrap = LambdaBootstrapBuilder.Create(({0}){1}, new SourceGeneratorLambdaJsonSerializer<MyCustomJsonSerializerContext>())
                 .Build();
 
             await lambdaBootstrap.RunAsync();

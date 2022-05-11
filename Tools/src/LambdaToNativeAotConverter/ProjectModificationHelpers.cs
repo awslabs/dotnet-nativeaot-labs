@@ -8,7 +8,11 @@ namespace LambdaToNativeAotConverter
 {
     public static class ProjectModificationHelpers
     {
-
+        /// <summary>
+        /// Calls 'dotnet add package' on the given csproj file for the given package
+        /// </summary>
+        /// <param name="csprojPath">Path to csproj file</param>
+        /// <param name="package">The full name of the package to add</param>
         public static void AddPackage(string csprojPath, string package)
         {
             var addIlProcess = Process.Start("dotnet", $"add \"{csprojPath}\" package {package}");
@@ -18,15 +22,15 @@ namespace LambdaToNativeAotConverter
             }
         }
 
+        /// <summary>
+        /// Adds a new file EntryPoint.cs into the same directory as the csproj file. This new file will have a main method entry point that bootstraps a lambda which will be able to handle the given handler
+        /// </summary>
+        /// <param name="csprojPath">Path to csproj</param>
+        /// <param name="handlerFilePath">Path to the .cs file which defines the handler</param>
+        /// <param name="handlerFullName">The fully qualified name of the handler (with namespace) that this lambda uses</param>
         public static void AddEntryPoint(string csprojPath, string handlerFilePath, string handlerFullName)
         {
-            var tree = CSharpSyntaxTree.ParseText(File.ReadAllText(handlerFilePath));
-            var Mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
-            var compilation = CSharpCompilation.Create("MyCompilation",
-                syntaxTrees: new[] { tree }, references: new[] { Mscorlib });
-            //Note that we must specify the tree for which we want the model.
-            //Each tree has its own semantic model
-            var model = compilation.GetSemanticModel(tree);
+            SyntaxTree? tree = CSharpSyntaxTree.ParseText(File.ReadAllText(handlerFilePath));
 
             CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
             var matchingSyntaxes = root.DescendantNodes()
@@ -37,7 +41,6 @@ namespace LambdaToNativeAotConverter
                 InputOutputHelpers.WriteError($"Could not find handler name {handlerFullName} inside path {handlerFilePath}");
             }
             MethodDeclarationSyntax functionHandler = matchingSyntaxes.First();
-
             var returnType = functionHandler.ReturnType.ToString();
             List<string?> parameterTypes = new();
             foreach (var parameter in functionHandler.ParameterList.Parameters)
@@ -54,45 +57,68 @@ namespace LambdaToNativeAotConverter
                 handlerType = $"Func<{string.Join(',', parameterTypes)}, {returnType}>";
             }
 
-            var fullHandlerNameParts = handlerFullName.Split('.');
-            var handlerShortMethodName = fullHandlerNameParts.Last();
-            var handlerFullClassName = string.Join('.', fullHandlerNameParts.Reverse().Skip(1).Reverse());
-
-            var handlerInstance = $" new {handlerFullClassName}()." + handlerShortMethodName;
+            var isStatic = functionHandler.Modifiers.Any(x => x.Text == "static");
+            string handlerInstance;
+            if (isStatic)
+            {
+                handlerInstance = handlerFullName;
+            }
+            else
+            {
+                var fullHandlerNameParts = handlerFullName.Split('.');
+                var handlerShortMethodName = fullHandlerNameParts.Last();
+                var handlerFullClassName = string.Join('.', fullHandlerNameParts.Reverse().Skip(1).Reverse());
+                handlerInstance = $" new {handlerFullClassName}()." + handlerShortMethodName;
+            }
 
             var newEntryPointPath = Directory.GetParent(csprojPath)?.ToString() ?? "";
             File.WriteAllText(Path.Combine(newEntryPointPath, Constants.NewEntryPointFileName), string.Format(Constants.EntryPointContent, handlerType, handlerInstance));
         }
 
-        public static void AddLambdaToolsDefaults(string path)
+        /// <summary>
+        /// Adds a NativeAOT compatible json config file for deploying using the dotnet lambda tools
+        /// </summary>
+        /// <param name="csprojPath">The path to the csproj. We will put the new config file in the same directory as the csproj file.</param>
+        public static void AddLambdaToolsDefaults(string csprojPath)
         {
-            var pathToToolsDefaults = Path.Combine(Directory.GetParent(path)?.ToString() ?? "", Constants.DefaultLambdaToolsConfigFileName);
-            var pathToToolsBackup = Path.Combine(Directory.GetParent(path)?.ToString() ?? "", Constants.BackupLambdaToolsConfigFileName);
+            var pathToToolsDefaults = Path.Combine(Directory.GetParent(csprojPath)?.ToString() ?? "", Constants.DefaultLambdaToolsConfigFileName);
+            var pathToToolsBackup = Path.Combine(Directory.GetParent(csprojPath)?.ToString() ?? "", Constants.BackupLambdaToolsConfigFileName);
 
             if (File.Exists(pathToToolsDefaults))
             {
                 File.Copy(pathToToolsDefaults, pathToToolsBackup);
-                InputOutputHelpers.WriteWarning("It looks like you already had a aws-lambda-tools-defaults.json file. It's been renamed to aws-lambda-tools-defaults.json-old.json, please merge it with the new NativeAOT-compatible file that has replaced it. " +
+                InputOutputHelpers.WriteWarning($"It looks like you already had a {Constants.DefaultLambdaToolsConfigFileName} file. It's been renamed to {Constants.BackupLambdaToolsConfigFileName}, " +
+                    $"please merge it with the new NativeAOT-compatible file that has replaced it. " +
                     "For NativeAOT, you will need to keep these settings as-is function-runtime:provided.al2, function-handler:bootstrap, msbuild-parameters:--self-contained true");
             }
 
             File.WriteAllText(pathToToolsDefaults, Constants.LambdaToolsDefaultContent);
         }
 
-        public static void SetCsProjProperty(string csprojPath, string propertyName, string propertyValue)
+        /// <summary>
+        /// Updates the propertyName to the propertyValue inside the first PropertyGroup in the csproj file.
+        /// </summary>
+        /// <param name="csprojPath">Path to the csproj file that will get updated</param>
+        /// <param name="propertyName">The name of the property to update or add, example "AssemblyName"</param>
+        /// <param name="propertyValue">The value to update the property to, example "bootstrap"</param>
+        /// <returns>true if the property value was added or changed, false if no change was needed</returns>
+        public static bool SetCsProjProperty(string csprojPath, string propertyName, string propertyValue)
         {
+            var wasUpdateNeeded = false;
+
             XmlDocument xmlDoc = new();
             xmlDoc.Load(csprojPath);
 
             var existingMatchingPropertyNodes = xmlDoc.GetElementsByTagName(propertyName);
+            // This property type doesn't exist yet, add a line for it
             if (existingMatchingPropertyNodes == null || existingMatchingPropertyNodes.Count == 0)
             {
                 var properyGroup = xmlDoc.GetElementsByTagName("PropertyGroup")[0];
 
                 if (properyGroup == null)
                 {
-                    Console.WriteLine("csproj should have at least 1 property group");
-                    return;
+                    InputOutputHelpers.WriteError("csproj does not have any property groups, please check that this is a valid csproj file.");
+                    Environment.Exit(1);
                 }
 
                 //Create a new node.
@@ -101,20 +127,36 @@ namespace LambdaToNativeAotConverter
 
                 //Add the node to the document.
                 properyGroup.AppendChild(elem);
+                wasUpdateNeeded = true;
             }
+            // This property type already exists, check that it only exists once, and make sure it's the correct value
             else
             {
                 if (existingMatchingPropertyNodes.Count > 1)
                 {
-                    Console.WriteLine($"Sorry, we don't support multiple {propertyName} types in the csproj file yet.");
-                    return;
+                    InputOutputHelpers.WriteError($"Sorry, we don't support multiple {propertyName} types in the csproj file.");
+                    Environment.Exit(1);
                 }
                 var existingMatchingPropertyNode = existingMatchingPropertyNodes[0];
-                if (existingMatchingPropertyNode == null) { throw new ApplicationException($"Found 1 {propertyName} element in csproj, but it was null. This is unexpected."); }
+                if (existingMatchingPropertyNode == null)
+                {
+                    InputOutputHelpers.WriteError($"Found 1 {propertyName} element in csproj, but it was null. This is unexpected, please check that this is a valid csproj file.");
+                    Environment.Exit(1);
+                }
 
-                existingMatchingPropertyNode.InnerText = propertyValue;
+                if (!existingMatchingPropertyNode.InnerText.Equals(propertyValue, StringComparison.OrdinalIgnoreCase))
+                {
+                    wasUpdateNeeded = true;
+                    existingMatchingPropertyNode.InnerText = propertyValue;
+                }
             }
-            xmlDoc.Save(csprojPath);
+
+            if (wasUpdateNeeded)
+            {
+                xmlDoc.Save(csprojPath);
+            }
+
+            return wasUpdateNeeded;
         }
     }
 }

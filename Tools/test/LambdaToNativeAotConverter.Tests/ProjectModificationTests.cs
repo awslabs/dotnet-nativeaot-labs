@@ -47,12 +47,14 @@ namespace LambdaToNativeAotConverter.Tests
             Assert.Single(Regex.Matches(File.ReadAllText(csprojPath), "<PackageReference Include=\"Microsoft.DotNet.ILCompiler\"")); // Check for exactly 1 instance of the package reference
         }
 
-        [Fact]
-        public void AddEntryPoint_AddsWithCorrectHandler()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void AddEntryPoint_AddsWithCorrectHandler(bool isStatic)
         {
             // Arrange
             string handlerName = "LambdaToConvert.Function.MySampleLambdaHandler";
-            string handlerPath = CreateLambdaHandlerFile();
+            string handlerPath = CreateLambdaHandlerFile(isStatic);
 
             // Act
             ProjectModificationHelpers.AddEntryPoint(Path.Combine(tempFilePath, "sample.csproj"), handlerPath, handlerName);
@@ -61,7 +63,7 @@ namespace LambdaToNativeAotConverter.Tests
             var expectedPath = Path.Combine(tempFilePath, Constants.NewEntryPointFileName);
             Assert.True(File.Exists(expectedPath));
             var newFileContent = File.ReadAllText(expectedPath);
-            Assert.Equal(ExpectedEntryPointContent, newFileContent);
+            Assert.Equal(isStatic ? ExpectedEntryPointContentStatic : ExpectedEntryPointContentNonStatic, newFileContent);
 
             // Make sure it will compile
             var tempCsProjPathForTestingBuild = Path.Combine(tempFilePath, "MyProject.csproj");
@@ -93,9 +95,10 @@ namespace LambdaToNativeAotConverter.Tests
         }
 
         [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public void SetCsProjProperty_CanAddOrUpdateProperty(bool valueAlreadyExists)
+        [InlineData(true, true)]
+        [InlineData(true, false)]
+        [InlineData(false, false)]
+        public void SetCsProjProperty_CanAddOrUpdateProperty(bool propertyAlreadyExists, bool valueNeedsUpdate)
         {
             // Arrange
             var testPropertyName = "MyTestProperty";
@@ -108,23 +111,31 @@ $@"<Project Sdk=""Microsoft.NET.Sdk"">
   </PropertyGroup>
 </Project>";
             var csprojPath = CreateCsProjFromTemplate("SampleBlankCsProj.txt");
-            if (valueAlreadyExists)
+            if (propertyAlreadyExists)
             {
-                File.WriteAllText(csprojPath, afterValue.Replace(testPropertyValue, testPropertyValue + "OtherValue"));
+                var valueToSetTo = valueNeedsUpdate ? testPropertyValue + "OtherValue" : testPropertyValue;
+                File.WriteAllText(csprojPath, afterValue.Replace(testPropertyValue, valueToSetTo));
             }
 
             // Act
-            ProjectModificationHelpers.SetCsProjProperty(csprojPath, testPropertyName, testPropertyValue);
+            var result = ProjectModificationHelpers.SetCsProjProperty(csprojPath, testPropertyName, testPropertyValue);
 
             // Assert
-
+            if (!propertyAlreadyExists || (propertyAlreadyExists && valueNeedsUpdate))
+            {
+                Assert.True(result);
+            }
+            else
+            {
+                Assert.False(result);
+            }
             Assert.Equal(afterValue, File.ReadAllText(csprojPath));
         }
 
-        private string CreateLambdaHandlerFile()
+        private string CreateLambdaHandlerFile(bool isStatic)
         {
             var newPath = Path.Combine(tempFilePath, $"FunctionHandler.cs");
-            File.Copy("SampleHandlerCsFile.txt", newPath);
+            File.Copy(isStatic ? "SampleHandlerCsFileStatic.txt" : "SampleHandlerCsFileNonStatic.txt", newPath);
             return newPath;
         }
 
@@ -135,8 +146,8 @@ $@"<Project Sdk=""Microsoft.NET.Sdk"">
             return newPath;
         }
 
-        private const string ExpectedEntryPointContent = @"
-using Amazon.Lambda.Core;
+        private const string ExpectedEntryPointContentNonStatic =
+@"using Amazon.Lambda.Core;
 using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using System.Text.Json;
@@ -151,8 +162,43 @@ namespace UpdateThisToYourOwnNamespace
         /// </summary>
         private static async Task Main()
         {
-            // If this line has build errors, you may need to instantiate your handler's class with the appropriate constructor arguments, or if your handler is static, reference it statically instead of newing it up
-            var lambdaBootstrap = LambdaBootstrapBuilder.Create((Func<string,ILambdaContext, string>) new LambdaToConvert.Function().MySampleLambdaHandler, new DefaultLambdaJsonSerializer())
+            // If this line has build errors, you may need to instantiate your handler's class with the appropriate constructor arguments
+            var lambdaBootstrap = LambdaBootstrapBuilder.Create((Func<string,ILambdaContext, string>) new LambdaToConvert.Function().MySampleLambdaHandler, new SourceGeneratorLambdaJsonSerializer<MyCustomJsonSerializerContext>())
+                .Build();
+
+            await lambdaBootstrap.RunAsync();
+        }
+    }
+
+    [JsonSerializable(typeof(DateTimeOffset?))] // This is just an example, replace this (and add more attributes) with types that you need to use with JSON serialization 
+    public partial class MyCustomJsonSerializerContext : JsonSerializerContext
+    {
+        // By using this partial class derived from JsonSerializerContext, we can generate reflection free JSON Serializer code at compile time
+        // which can deserialize our class and properties. However, we must attribute this class to tell it what types to generate serialization code for
+        // See https://docs.microsoft.com/en-us/dotnet/standard/serialization/system-text-json-source-generation
+        // See the Reflection Sample in dotnet-nativeaot-labs for an example of how to fix a MissingMetadataException
+    }
+}
+";
+
+        private const string ExpectedEntryPointContentStatic =
+@"using Amazon.Lambda.Core;
+using Amazon.Lambda.RuntimeSupport;
+using Amazon.Lambda.Serialization.SystemTextJson;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace UpdateThisToYourOwnNamespace
+{
+    public class EntryPoint
+    {
+        /// <summary>
+        /// The main entry point for the custom runtime.
+        /// </summary>
+        private static async Task Main()
+        {
+            // If this line has build errors, you may need to instantiate your handler's class with the appropriate constructor arguments
+            var lambdaBootstrap = LambdaBootstrapBuilder.Create((Func<string,ILambdaContext, string>)LambdaToConvert.Function.MySampleLambdaHandler, new SourceGeneratorLambdaJsonSerializer<MyCustomJsonSerializerContext>())
                 .Build();
 
             await lambdaBootstrap.RunAsync();

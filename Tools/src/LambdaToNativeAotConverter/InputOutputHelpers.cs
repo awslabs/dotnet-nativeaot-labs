@@ -23,6 +23,22 @@
             Console.ResetColor();
         }
 
+        public static void GetConsentToUpgradeInPlace()
+        {
+            string? agreement = null;
+            while (agreement == null)
+            {
+                Console.WriteLine("This program will upgrade the given project in place, so it is recommended to use source control and/or backup your existing code before running the conversion. Do you agree? (Type \"yes\" to continue)");
+                agreement = Console.ReadLine()?.Trim('"').Trim('\'').Trim(' ');
+                Console.WriteLine();
+            }
+            if (!agreement.Equals("yes"))
+            {
+                WriteError("Please make a backup or commit your project before running this program.");
+                Environment.Exit(1);
+            }
+        }
+
         public static string GetCsProjPath()
         {
             string? csprojPath = null;
@@ -30,6 +46,7 @@
             {
                 Console.WriteLine("Enter full path to .csproj file (i.e. 'C:\\Code\\MyRepo\\MyProject\\MyProject.csproj'");
                 csprojPath = Console.ReadLine()?.Trim('"').Trim('\'').Trim(' ');
+                Console.WriteLine();
             }
 
             if (!File.Exists(csprojPath))
@@ -52,8 +69,9 @@
             string? functionHandler = null;
             while (functionHandler == null)
             {
-                Console.WriteLine("Enter function handler method's fully qualified name (with namespace i.e. 'MyNamespace.MyClass.MyHandler'");
+                Console.WriteLine("Enter function handler method's fully qualified name (with namespace i.e. 'MyNamespace.MyClass.MyHandler'.) If your Lambda project output type is already exe, then just enter any non-empty value here.");
                 functionHandler = Console.ReadLine()?.Trim('"').Trim('\'').Trim(' ');
+                Console.WriteLine();
             }
 
             return functionHandler;
@@ -64,8 +82,9 @@
             string? functionHandlerPath = null;
             while (functionHandlerPath == null)
             {
-                Console.WriteLine("Enter path to cs file that contains your function handler (i.e. 'C:\\Code\\MyRepo\\MyProject\\Handler.cs'");
+                Console.WriteLine("Enter path to cs file that contains your function handler (i.e. 'C:\\Code\\MyRepo\\MyProject\\Handler.cs')  If your Lambda project output type is already exe, then just enter any non-empty value here.");
                 functionHandlerPath = Console.ReadLine()?.Trim('"').Trim('\'').Trim(' ');
+                Console.WriteLine();
             }
 
             return functionHandlerPath;
