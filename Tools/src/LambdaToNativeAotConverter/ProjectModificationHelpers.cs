@@ -51,14 +51,17 @@ namespace LambdaToNativeAotConverter
             }
 
             string handlerType = "";
-            if (returnType.ToLowerInvariant().Equals("void"))
+            if (returnType.Equals("void", StringComparison.OrdinalIgnoreCase))
             {
                 handlerType = $"Action<{string.Join(',', parameterTypes)}>";
             }
             else
             {
                 handlerType = $"Func<{string.Join(',', parameterTypes)}, {returnType}>";
-                typesForJsonSerializableAttributes.Add(returnType);
+                if (!returnType.Equals("task", StringComparison.OrdinalIgnoreCase))
+                {
+                    typesForJsonSerializableAttributes.Add(returnType);
+                }
             }
 
             var isStatic = handlerSyntax.Modifiers.Any(x => x.Text == "static");
