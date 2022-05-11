@@ -44,7 +44,7 @@
             string? csprojPath = null;
             while (csprojPath == null)
             {
-                Console.WriteLine("Enter full path to .csproj file (i.e. 'C:\\Code\\MyRepo\\MyProject\\MyProject.csproj'");
+                Console.WriteLine("Enter full path to .csproj file (i.e. 'C:\\Code\\MyRepo\\MyProject\\MyProject.csproj')");
                 csprojPath = Console.ReadLine()?.Trim('"').Trim('\'').Trim(' ');
                 Console.WriteLine();
             }

@@ -8,6 +8,16 @@
             string csprojPath;
             string functionHandler;
             string functionHandlerPath;
+            if (args.Length != 0 && args.Length != 4)
+            {
+                InputOutputHelpers.WriteError("Usage: Either provide no arguments to be prompted for input, or provide the needed 4 arguments. " + Environment.NewLine +
+                    "1) the text 'yes' (to agree that code will be overwritten), " + Environment.NewLine +
+                    "2) the full path to .csproj file (i.e. 'C:\\Code\\MyRepo\\MyProject\\MyProject.csproj') " + Environment.NewLine +
+                    "3) the function handler method's fully qualified name (with namespace i.e. 'MyNamespace.MyClass.MyHandler'.) If your Lambda project output type is already exe, then just enter any non-empty value here." + Environment.NewLine +
+                    "4) the full path to cs file that contains your function handler (i.e. 'C:\\Code\\MyRepo\\MyProject\\Handler.cs')  If your Lambda project output type is already exe, then just enter any non-empty value here. " + Environment.NewLine +
+                    Environment.NewLine + "Example: LambdaToNativeAotConverter.exe yes \"C:\\Code\\LambdaToConvertTopLevel\\LambdaToConvertTopLevel.csproj\" MyNamespace.MyClass.MyFunction \"C:\\Code\\LambdaToConvertTopLevel\\Function.cs\"" + Environment.NewLine);
+                Environment.Exit(1);
+            }
             if (args.Length == 4)
             {
                 if (!args[0].Trim('"').Trim('\'').Trim(' ').Equals("yes"))
