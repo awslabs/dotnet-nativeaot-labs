@@ -2,7 +2,7 @@
 
 This sample contains code that has already been converted to build and run natively. If you want to learn more about how it was created, see the main [README](../../README.md).
 
-This code contains a config file `aws-lambda-tools-defaults.json` which tells the .NET Core Lambda Tools how to deploy it. If you don't have those installed they can be installed with `dotnet tool install -g Amazon.Lambda.Tools`
+This code contains a config file `aws-lambda-tools-defaults.json` which tells the .NET Core Lambda Tools how to deploy it. Importantly, in the `aws-lambda-tools-defaults.json` file, we specify that we want to run on a custom AL2 runtime and we also pass extra MSBuild parameters. If you don't have the .NET Core Lambda Tools installed they can be installed with `dotnet tool install -g Amazon.Lambda.Tools`
 
 If you haven't already, configure your local AWS profile with `aws configure`
 

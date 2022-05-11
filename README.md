@@ -46,7 +46,7 @@ If you haven't already, install the prerequisites from the main [README](../../R
 
 For now, to work with native code, we will need to deploy our Lambda as a custom runtime. This is because there is currently no Lambda-managed .NET NativeAOT runtime. To generate a simple function with a custom runtime, from the command line, run `dotnet new lambda.CustomRuntimeFunction`
 
-At this point, you should be able to deploy the Lambda to AWS and test it, but it will just be compiling as [ReadyToRun](https://docs.microsoft.com/en-us/dotnet/core/deploying/ready-to-run) which gives some of the benefits of Ahead of Time compilation, but still uses Just in Time compilation too.
+At this point, you should be able to deploy the Lambda (`dotnet lambda deploy-function --function-name MySampleReadyToRunFunction`) to AWS and test it, but it will just be compiling as [ReadyToRun](https://docs.microsoft.com/en-us/dotnet/core/deploying/ready-to-run) which gives some of the benefits of Ahead of Time compilation, but still uses Just in Time compilation too. Next, we will convert this function to run with NativeAOT. If you want to keep this ready-to-run function for comparison, create another identical project that we can use to convert to NativeAOT.
 
 ## Understanding the csproj
 
