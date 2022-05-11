@@ -57,7 +57,7 @@ namespace LambdaToNativeAotConverter.Tests
             string handlerPath = CreateLambdaHandlerFile(isStatic);
 
             // Act
-            ProjectModificationHelpers.AddEntryPoint(Path.Combine(tempFilePath, "sample.csproj"), handlerPath, handlerName);
+            ProjectModificationHelpers.AddEntryPoint(Path.Combine(tempFilePath, "MyProject.csproj"), handlerPath, handlerName);
 
             // Assert
             var expectedPath = Path.Combine(tempFilePath, Constants.NewEntryPointFileName);
@@ -169,8 +169,13 @@ namespace UpdateThisToYourOwnNamespace
             await lambdaBootstrap.RunAsync();
         }
     }
-
-    [JsonSerializable(typeof(DateTimeOffset?))] // This is just an example, replace this (and add more attributes) with types that you need to use with JSON serialization 
+    
+    // We've already added an attribute for the parameter type and return type of your handler (they may not actually be needed such as in the case when your return type is 'string')
+    // You will probably need to include the correct using statements at the top of this file to fix the build if the types are not built-in dotnet types
+    // You can also add other types that you need to use with JSON serialization. 
+    // See 'Using source generator for JSON serialization' at this link for more information https://aws.amazon.com/blogs/compute/introducing-the-net-6-runtime-for-aws-lambda/
+    [JsonSerializable(typeof(string))]
+    [JsonSerializable(typeof(string))] 
     public partial class MyCustomJsonSerializerContext : JsonSerializerContext
     {
         // By using this partial class derived from JsonSerializerContext, we can generate reflection free JSON Serializer code at compile time
@@ -204,8 +209,13 @@ namespace UpdateThisToYourOwnNamespace
             await lambdaBootstrap.RunAsync();
         }
     }
-
-    [JsonSerializable(typeof(DateTimeOffset?))] // This is just an example, replace this (and add more attributes) with types that you need to use with JSON serialization 
+    
+    // We've already added an attribute for the parameter type and return type of your handler (they may not actually be needed such as in the case when your return type is 'string')
+    // You will probably need to include the correct using statements at the top of this file to fix the build if the types are not built-in dotnet types
+    // You can also add other types that you need to use with JSON serialization. 
+    // See 'Using source generator for JSON serialization' at this link for more information https://aws.amazon.com/blogs/compute/introducing-the-net-6-runtime-for-aws-lambda/
+    [JsonSerializable(typeof(string))]
+    [JsonSerializable(typeof(string))] 
     public partial class MyCustomJsonSerializerContext : JsonSerializerContext
     {
         // By using this partial class derived from JsonSerializerContext, we can generate reflection free JSON Serializer code at compile time

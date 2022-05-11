@@ -32,21 +32,24 @@ namespace LambdaToNativeAotConverter
         {
             SyntaxTree? tree = CSharpSyntaxTree.ParseText(File.ReadAllText(handlerFilePath));
 
-            CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
-            var matchingSyntaxes = root.DescendantNodes()
-            .OfType<MethodDeclarationSyntax>().Where(x => x.Identifier.Text == handlerFullName.Split('.').Last());
+            MethodDeclarationSyntax? handlerSyntax = tree.GetCompilationUnitRoot().DescendantNodes()
+            .OfType<MethodDeclarationSyntax>().Where(x => x.Identifier.Text == handlerFullName.Split('.').Last()).FirstOrDefault();
 
-            if (!matchingSyntaxes.Any())
+            if (handlerSyntax == null)
             {
                 InputOutputHelpers.WriteError($"Could not find handler name {handlerFullName} inside path {handlerFilePath}");
+                return;
             }
-            MethodDeclarationSyntax functionHandler = matchingSyntaxes.First();
-            var returnType = functionHandler.ReturnType.ToString();
-            List<string?> parameterTypes = new();
-            foreach (var parameter in functionHandler.ParameterList.Parameters)
+            var returnType = handlerSyntax.ReturnType.ToString();
+
+            List<string?> typesForJsonSerializableAttributes = new();
+            List<string> parameterTypes = handlerSyntax.ParameterList.Parameters.Select(x => x.Type.ToString()).ToList();
+            if (parameterTypes.Count == 2)
             {
-                parameterTypes.Add(parameter?.Type?.ToString());
+                // The second parameter is always an ILambdaContext, so just take the user's first parameter
+                typesForJsonSerializableAttributes.Add(parameterTypes.First());
             }
+
             string handlerType = "";
             if (returnType.ToLowerInvariant().Equals("void"))
             {
@@ -55,9 +58,10 @@ namespace LambdaToNativeAotConverter
             else
             {
                 handlerType = $"Func<{string.Join(',', parameterTypes)}, {returnType}>";
+                typesForJsonSerializableAttributes.Add(returnType);
             }
 
-            var isStatic = functionHandler.Modifiers.Any(x => x.Text == "static");
+            var isStatic = handlerSyntax.Modifiers.Any(x => x.Text == "static");
             string handlerInstance;
             if (isStatic)
             {
@@ -72,7 +76,8 @@ namespace LambdaToNativeAotConverter
             }
 
             var newEntryPointPath = Directory.GetParent(csprojPath)?.ToString() ?? "";
-            File.WriteAllText(Path.Combine(newEntryPointPath, Constants.NewEntryPointFileName), string.Format(Constants.EntryPointContent, handlerType, handlerInstance));
+            var jsonSerializableAttributes = string.Join(Environment.NewLine, typesForJsonSerializableAttributes.Select(x => $"    [JsonSerializable(typeof({x}))]"));
+            File.WriteAllText(Path.Combine(newEntryPointPath, Constants.NewEntryPointFileName), string.Format(Constants.EntryPointContent, handlerType, handlerInstance, jsonSerializableAttributes));
         }
 
         /// <summary>
