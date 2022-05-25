@@ -1,6 +1,6 @@
 # Build and/or Run with Containers
 
-This sample's code performs the same function as the [SimpleFunctionWithCustomRuntime](../SimpleFunctionWithCustomRuntime/), however we've also included 2 docker files. The first allows you to build on an AL2 docker container, preventing the need to spin up a whole AL2 VM. The second will both build your native code and also run it hosted in a container in Lambda. Before using the images below, you will need to [Authenticate your Docker client to the Amazon Linux Public registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/amazon_linux_container_image.html). You can also get the login command by navigating to your own AWS ECR repository and then clicking 'View push commands'.
+This sample's code performs the same function as the [SimpleFunctionWithCustomRuntime](../SimpleFunctionWithCustomRuntime/README.md), however we've also included 2 docker files. The first allows you to build on an AL2 docker container, preventing the need to spin up a whole AL2 VM. The second will both build your native code and also run it hosted in a container in Lambda. Before using the images below, you will need to [Authenticate your Docker client to the Amazon Linux Public registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/amazon_linux_container_image.html). You can also get the login command by navigating to your own AWS ECR repository and then clicking 'View push commands'.
 
 ## Build Only
 
