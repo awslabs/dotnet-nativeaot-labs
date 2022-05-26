@@ -1,3 +1,6 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+
 FROM public.ecr.aws/amazonlinux/amazonlinux:2 AS base
 WORKDIR /source
 # Install .NET 6 and other dependencies for compiling naively
