@@ -1,4 +1,7 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
+﻿// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+
+using Microsoft.CodeAnalysis.CSharp;
 using System.Xml;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
