@@ -6,7 +6,7 @@ We want to use this repository to gather community feedback and questions about 
 
 ## What is NativeAOT for .NET?
 
-At a high level, NativeAOT for .NET is a way to compile your .NET projects directly to machine code, eliminating the Intermediary Language and Just-In-Time compilation. AOT stands for "Ahead of Time", as opposed to "Just in Time". While compiling this way gives less flexibility, it has the ability to improve performance, especially at startup.
+At a high level, NativeAOT for .NET is a way to compile your .NET projects directly to machine code, eliminating the Intermediate Language and Just-In-Time compilation. AOT stands for "Ahead of Time", as opposed to "Just in Time". While compiling this way gives less flexibility, it has the ability to improve performance, especially at startup.
 
 While currently still in preview, NativeAOT is expected to be shipped as part of [.NET 7](https://github.com/dotnet/runtime/issues/61231).
 
