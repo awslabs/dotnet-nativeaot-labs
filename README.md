@@ -40,7 +40,7 @@ These instructions will walk you through how to generate, deploy, and test a sim
 1. [.NET Global Lambda Tools for AWS](https://aws.amazon.com/blogs/developer/net-core-global-tools-for-aws/) For deploying and invoking your lambda. (installed with `dotnet tool install -g Amazon.Lambda.Tools`)
 1. [Amazon Linux 2](https://aws.amazon.com/amazon-linux-2/?amazon-linux-whats-new.sort-by=item.additionalFields.postDateTime&amazon-linux-whats-new.sort-order=desc). If building for Lambda, you'll need to create the binaries on Linux since cross-OS compilation is not supported with NativeAOT. We recommend using AL2 for compatibility with Lambda. You can either use an EC2 instance running AL2 or a Docker container running AL2 (see container sample) or [Amazon Linux 2 for WSL2](https://aws.amazon.com/blogs/developer/developing-on-amazon-linux-2-using-windows/).
 1. (Optional) [AWS Visual Studio Toolkit](https://aws.amazon.com/visualstudio/) If using Visual Studio.
-1. (Optional) It may also be helpful to read these documents from the .NET repositories and build a local console app before moving on to Lambda: [Using Native AOT](https://github.com/dotnet/runtimelab/blob/feature/NativeAOT/docs/using-nativeaot/README.md)
+1. (Optional) It may also be helpful to read these documents from the .NET repositories and build a local console app before moving on to Lambda: [Using Native AOT](https://github.com/dotnet/runtime/blob/main/src/coreclr/nativeaot/docs/README.md)
 
 ## Set Up the Sample Function Code
 
