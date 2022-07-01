@@ -42,6 +42,7 @@ public class SampleItemWithProperties
 // Comment out this partial class and attributes to see the runtime error for yourself (the error can be seen at the bottom of this file)
 [JsonSerializable(typeof(SampleItemWithProperties))]
 [JsonSerializable(typeof(DateTimeOffset?))]
+[JsonSerializable(typeof(string))]
 public partial class MyCustomJsonSerializerContext : JsonSerializerContext
 {
     // By using this partial class derived from JsonSerializerContext, we can generate reflection free JSON Serializer code at compile time
