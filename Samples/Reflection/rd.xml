@@ -1,0 +1,7 @@
+﻿<Directives>
+	<Application>
+		<Assembly Name="System.Text.Json">
+			<Type Name="System.Text.Json.Serialization.Converters.NullableConverter`1[[System.DateTimeOffset,mscorlib]]" Dynamic="Required All" />
+		</Assembly>
+	</Application>
+</Directives>

@@ -39,9 +39,14 @@ public class SampleItemWithProperties
     public DateTimeOffset? CreatedDate {get; set;}
 }
 
-// Comment out this partial class and attributes to see the runtime error for yourself (the error can be seen at the bottom of this file)
+// To see the runtime error for yourself:
+// Comment out this partial class and attributes
+// Then replace `new SourceGeneratorLambdaJsonSerializer<MyCustomJsonSerializerContext>()` above with:
+// new DefaultLambdaJsonSerializer()
+// (the error you can expect to see at runtime is at the bottom of this file, MissingMetadataException)
 [JsonSerializable(typeof(SampleItemWithProperties))]
 [JsonSerializable(typeof(DateTimeOffset?))]
+[JsonSerializable(typeof(string))]
 public partial class MyCustomJsonSerializerContext : JsonSerializerContext
 {
     // By using this partial class derived from JsonSerializerContext, we can generate reflection free JSON Serializer code at compile time
