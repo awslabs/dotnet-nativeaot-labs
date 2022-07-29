@@ -10,8 +10,6 @@ At a high level, NativeAOT for .NET is a way to compile your .NET projects direc
 
 While currently still in preview, NativeAOT is expected to be shipped as part of [.NET 7](https://github.com/dotnet/runtime/issues/61231).
 
-NativeAOT for .NET is based off of the previous [CoreRT repository](https://github.com/dotnet/corert).
-
 ## Why use NativeAOT for .NET?
 
 ### Faster Cold Starts
@@ -24,7 +22,8 @@ Check out some of our pre-built samples, use the [LambdaToNativeAotConverter](/T
 
 ### Samples
 
-1. [Simple Function With Custom Runtime](Samples/SimpleFunctionWithCustomRuntime/README.md)
+1. [Simple .NET 6 Function With Custom Runtime](Samples/SimpleNet6FunctionWithCustomRuntime/README.md)
+1. [Simple .NET 7 Function With Custom Runtime](Samples/SimpleNet7FunctionWithCustomRuntime/README.md)
 1. [Build and Run with Containers](Samples/BuildAndRunWithContainers/README.md)
 1. [ASP.NET Core Web API with reflection](Samples/Reflection/README.md)
 
@@ -35,12 +34,15 @@ These instructions will walk you through how to generate, deploy, and test a sim
 ## Prerequisites
 
 1. [.NET 6 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0). NativeAOT is only supported on .NET 6 and greater.
+1. (Optional)[.NET 7 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/7.0). NativeAOT has better support in .NET 7, but .NET 7 is still in preview.
 1. [AWS CLI](https://aws.amazon.com/cli/) For easy management of AWS resources from the command line. Make sure to [initialize your credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
 1. [Dotnet Amazon Lambda Templates](https://docs.aws.amazon.com/lambda/latest/dg/csharp-package-cli.html) For creating dotnet lambda projects from the command line. (installed with `dotnet new -i Amazon.Lambda.Templates`)
 1. [.NET Global Lambda Tools for AWS](https://aws.amazon.com/blogs/developer/net-core-global-tools-for-aws/) For deploying and invoking your lambda. (installed with `dotnet tool install -g Amazon.Lambda.Tools`)
 1. [Amazon Linux 2](https://aws.amazon.com/amazon-linux-2/?amazon-linux-whats-new.sort-by=item.additionalFields.postDateTime&amazon-linux-whats-new.sort-order=desc). If building for Lambda, you'll need to create the binaries on Linux since cross-OS compilation is not supported with NativeAOT. We recommend using AL2 for compatibility with Lambda. You can either use an EC2 instance running AL2 or a Docker container running AL2 (see container sample) or [Amazon Linux 2 for WSL2](https://aws.amazon.com/blogs/developer/developing-on-amazon-linux-2-using-windows/).
 1. (Optional) [AWS Visual Studio Toolkit](https://aws.amazon.com/visualstudio/) If using Visual Studio.
-1. (Optional) It may also be helpful to read these documents from the .NET repositories and build a local console app before moving on to Lambda: [Using Native AOT](https://github.com/dotnet/runtime/blob/main/src/coreclr/nativeaot/docs/README.md)
+1. (Optional) It may also be helpful to read these documents and build a local console app before moving on to Lambda:
+    1. [Microsoft Docs on NativeAOT](https://docs.microsoft.com/en-us/dotnet/core/deploying/native-aot)
+    1. [Using Native AOT](https://github.com/dotnet/runtime/blob/main/src/coreclr/nativeaot/docs/README.md)
 
 ## Set Up the Sample Function Code
 
@@ -58,14 +60,19 @@ There are some parts of the csproj worth understanding.
 
 ## Converting to Native
 
-For a simple function like this, converting to native only takes 2 simple steps.
+### .NET 6 - Converting to Native
 
-1. Edit the csproj and remove the line with PublishReadyToRun. Also remove the PublishReadyToRun comment. This isn't needed, and is an alterative compilation mode to NativeAOT.
+1. Edit the csproj and remove the line with `PublishReadyToRun`. Optionally, also remove the PublishReadyToRun comment. [ReadyToRun](https://docs.microsoft.com/en-us/dotnet/core/deploying/ready-to-run) is an alterative compilation mode to NativeAOT which mixes JIT and native code.
 1. Reference the NuGet package [Microsoft.DotNet.ILCompiler](https://www.nuget.org/packages/Microsoft.DotNet.ILCompiler/). In your csproj add the below PackageReference along with the other already existing PackageReferences or run this command from the same directory as your csproj `dotnet add package Microsoft.DotNet.ILCompiler --prerelease`
 
 ```XML
     <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.0-*" />
 ```
+
+### .NET 7 - Converting to Native
+
+1. Edit the csproj and change the line with `PublishReadyToRun` to `PublishAot`. Optionally, also remove the PublishReadyToRun comment. [ReadyToRun](https://docs.microsoft.com/en-us/dotnet/core/deploying/ready-to-run) is an alterative compilation mode to NativeAOT which mixes JIT and native code.
+1. Add a second project property under `PublishAot` called `StripSymbols` [as shown by Microsoft](https://docs.microsoft.com/en-us/dotnet/core/deploying/native-aot#native-debug-information). This will remove debugging symbols from the final binary and put them into their own file, making the bootstrap binary much smaller.
 
 ## Compiling as Native
 

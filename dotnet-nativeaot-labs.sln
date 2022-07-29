@@ -15,9 +15,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reflection", "Reflection", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reflection", "Samples\Reflection\Reflection.csproj", "{E4DB7129-71AB-4649-999A-A6713BA9A577}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleFunctionWithCustomRuntime", "SimpleFunctionWithCustomRuntime", "{A6588A49-45B6-4FC5-AB45-3902D236852B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleNet6FunctionWithCustomRuntime", "SimpleNet6FunctionWithCustomRuntime", "{A6588A49-45B6-4FC5-AB45-3902D236852B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomRuntime", "Samples\SimpleFunctionWithCustomRuntime\CustomRuntime.csproj", "{795D66F1-6EF4-4477-9BD2-924274C1A296}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomRuntime", "Samples\SimpleNet6FunctionWithCustomRuntime\CustomRuntime.csproj", "{795D66F1-6EF4-4477-9BD2-924274C1A296}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solution Items", "{A4DC4921-BA39-47FE-AF7B-06E7747D743B}"
 	ProjectSection(SolutionItems) = preProject
@@ -35,6 +35,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LambdaToNativeAotConverter", "Tools\src\LambdaToNativeAotConverter\LambdaToNativeAotConverter.csproj", "{39007FC1-AF94-4B18-81D0-A3A80CBE1D7D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LambdaToNativeAotConverter.Tests", "Tools\test\LambdaToNativeAotConverter.Tests\LambdaToNativeAotConverter.Tests.csproj", "{4C725D03-2524-4A3C-B938-23B85B05899C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleNet7FunctionWithCustomRuntime", "SimpleNet7FunctionWithCustomRuntime", "{F80B0342-3FD2-4D17-92C8-216C56543B90}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomRuntime", "Samples\SimpleNet7FunctionWithCustomRuntime\CustomRuntime.csproj", "{C7585A8B-8478-41CA-87EB-A510BA9BB311}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,6 +66,10 @@ Global
 		{4C725D03-2524-4A3C-B938-23B85B05899C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C725D03-2524-4A3C-B938-23B85B05899C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C725D03-2524-4A3C-B938-23B85B05899C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7585A8B-8478-41CA-87EB-A510BA9BB311}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7585A8B-8478-41CA-87EB-A510BA9BB311}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7585A8B-8478-41CA-87EB-A510BA9BB311}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7585A8B-8478-41CA-87EB-A510BA9BB311}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,6 +85,8 @@ Global
 		{A753D9A9-E385-4D7B-9A56-22FDE5B656C0} = {79314ACF-1A57-4E21-BD24-38EBF5819944}
 		{39007FC1-AF94-4B18-81D0-A3A80CBE1D7D} = {914A9808-75FF-45F6-BE61-EFD66FEAB5C0}
 		{4C725D03-2524-4A3C-B938-23B85B05899C} = {A753D9A9-E385-4D7B-9A56-22FDE5B656C0}
+		{F80B0342-3FD2-4D17-92C8-216C56543B90} = {DBAD5905-4237-42F6-B523-F9126D68F6F4}
+		{C7585A8B-8478-41CA-87EB-A510BA9BB311} = {F80B0342-3FD2-4D17-92C8-216C56543B90}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0214490E-D7F5-4E5E-AB55-CB35E930AAAE}
