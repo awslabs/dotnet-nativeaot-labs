@@ -40,6 +40,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleNet7FunctionWithCusto
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomRuntime", "Samples\SimpleNet7FunctionWithCustomRuntime\CustomRuntime.csproj", "{C7585A8B-8478-41CA-87EB-A510BA9BB311}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{85C14C21-277A-47B3-800C-B71FF58FB6CB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{119E0FB1-1C4C-4A3F-8F2F-E73CB1D45E63}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +94,7 @@ Global
 		{4C725D03-2524-4A3C-B938-23B85B05899C} = {A753D9A9-E385-4D7B-9A56-22FDE5B656C0}
 		{F80B0342-3FD2-4D17-92C8-216C56543B90} = {DBAD5905-4237-42F6-B523-F9126D68F6F4}
 		{C7585A8B-8478-41CA-87EB-A510BA9BB311} = {F80B0342-3FD2-4D17-92C8-216C56543B90}
+		{119E0FB1-1C4C-4A3F-8F2F-E73CB1D45E63} = {85C14C21-277A-47B3-800C-B71FF58FB6CB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0214490E-D7F5-4E5E-AB55-CB35E930AAAE}
