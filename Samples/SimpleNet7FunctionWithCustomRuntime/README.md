@@ -1,10 +1,12 @@
 # Simple .NET 7 Function With Custom Runtime
 
-This sample contains code that has already been converted to build and run natively. You will need to run on Amazon Linux 2 to deploy it. If you want to learn more about how it was created or how to run on Amazon Linux 2, see the main [README](../../README.md).
+This sample contains code that has already been converted to build and run natively. You will need to build on Amazon Linux 2 to deploy it to AWS Lambda. If you want to learn more about how it was created or how to run on Amazon Linux 2, see the main [README](../../README.md).
 
-This code contains a config file `aws-lambda-tools-defaults.json` which tells the .NET Core Lambda Tools how to deploy it. Importantly, in the `aws-lambda-tools-defaults.json` file, we specify that we want to run on a custom AL2 runtime and we also pass extra MSBuild parameters. If you don't have the .NET Core Lambda Tools installed they can be installed with `dotnet tool install -g Amazon.Lambda.Tools`
+This code contains a config file `aws-lambda-tools-defaults.json` which tells the .NET Core Lambda Tools how to deploy it. Importantly, in the `aws-lambda-tools-defaults.json` file, we specify that we want to run on a custom AL2 runtime. If you don't have the .NET Core Lambda Tools installed they can be installed with `dotnet tool install -g Amazon.Lambda.Tools`
 
 If you haven't already, configure your local AWS profile with `aws configure`
+
+Also, make sure you have the needed Linux Build Dependencies listed in [Prerequisites](../../README.md#prerequisites) `sudo yum -y install clang krb5-devel openssl-devel zip llvm`
 
 Then you can deploy the function with `dotnet lambda deploy-function` if needed you can also specify other parameters like so `dotnet lambda deploy-function --function-name MySampleNativeFunction --config-file aws-lambda-tools-defaults.json` or show all options with `dotnet lambda deploy-function --help`. If you have any issues using `dotnet lambda` with .NET 7, you can use .NET to manually publish the executable with `dotnet publish -r linux-x64 -c Release` and then manually zip the bootstrap file. From there, you can use the `dotnet lambda` tools for .NET 6 on Windows to deploy the package with `dotnet lambda deploy-function --package .\bin\Release\net7.0\linux-x64\native\bootstrap.zip`
 
