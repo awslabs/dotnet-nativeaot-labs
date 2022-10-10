@@ -39,6 +39,7 @@ These instructions will walk you through how to generate, deploy, and test a sim
 1. [Dotnet Amazon Lambda Templates](https://docs.aws.amazon.com/lambda/latest/dg/csharp-package-cli.html) For creating dotnet lambda projects from the command line. (installed with `dotnet new -i Amazon.Lambda.Templates`)
 1. [.NET Global Lambda Tools for AWS](https://aws.amazon.com/blogs/developer/net-core-global-tools-for-aws/) For deploying and invoking your lambda. (installed with `dotnet tool install -g Amazon.Lambda.Tools`)
 1. [Amazon Linux 2](https://aws.amazon.com/amazon-linux-2/?amazon-linux-whats-new.sort-by=item.additionalFields.postDateTime&amazon-linux-whats-new.sort-order=desc). If building for Lambda, you'll need to create the binaries on Linux since cross-OS compilation is not supported with NativeAOT. We recommend using AL2 for compatibility with Lambda. You can either use an EC2 instance running AL2 or a Docker container running AL2 (see container sample) or [Amazon Linux 2 for WSL2](https://aws.amazon.com/blogs/developer/developing-on-amazon-linux-2-using-windows/).
+1. [Linux Build Dependencies] `sudo yum -y install clang krb5-devel openssl-devel zip llvm`
 1. (Optional) [AWS Visual Studio Toolkit](https://aws.amazon.com/visualstudio/) If using Visual Studio.
 1. (Optional) It may also be helpful to read these documents and build a local console app before moving on to Lambda:
     1. [Microsoft Docs on NativeAOT](https://docs.microsoft.com/en-us/dotnet/core/deploying/native-aot)
@@ -66,7 +67,7 @@ There are some parts of the csproj worth understanding.
 1. Reference the NuGet package [Microsoft.DotNet.ILCompiler](https://www.nuget.org/packages/Microsoft.DotNet.ILCompiler/). In your csproj add the below PackageReference along with the other already existing PackageReferences or run this command from the same directory as your csproj `dotnet add package Microsoft.DotNet.ILCompiler --prerelease`
 
 ```XML
-    <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.0-*" />
+    <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.0-preview.7.22375.6" />
 ```
 
 ### .NET 7 - Converting to Native
@@ -91,7 +92,7 @@ Optional: Delete the bin and obj directories from your main project folder as yo
 To compile a binary suitable to deploy to AWS Lambda, we will need to build on Amazon Linux 2 (AL2). This will make sure our binary is built for the correct operating system and architecture and that all the correct native libraries are included. For now, there are a few options for how to do this. Obviously if your development machine is already AL2, you're good to go and can just work on that. If not, you could just spin up an AL2 EC2 instance on which you could compile. Or if you're on Windows, you can instead use [Amazon Linux 2 for WSL2](https://aws.amazon.com/blogs/developer/developing-on-amazon-linux-2-using-windows/). To use WSL you will need to enable CPU virtualization in your BIOS if you haven't already. Lastly, if non of those options work well, you could also check out the [Containers sample](/Samples/BuildAndRunWithContainers/README.md) to use Docker containers for publishing and/or running. From now on, this tutorial will assume you're on AL2 one way or another. You will need to install most of the prerequisites again if your build machine doesn't already have them.
 
 1. (Optional) If using an EC2 build machine. Create an EC2 instance that uses kernel `5.*` and architecture `64-bit (x86)`. If unsure on instance type, you can use a `t2.xlarge`. **Don't forget to terminate or stop it when done to prevent unnecessary costs.**
-1. If needed, download your source code to the AL2 build machine (git example below, but scp or others methods work too), or start over with another new empty Lambda `dotnet new lambda.CustomRuntimeFunction` 
+1. If needed, download your source code to the AL2 build machine (git example below, but scp or others methods work too), or start over with another new empty Lambda `dotnet new lambda.CustomRuntimeFunction`
     * `sudo yum install git`
     * `git clone https://github.com/owner/repositoryName.git` (you'll need a personal access token if this is a private repo)
 1. Install .NET CLI on the AL2 build machine
@@ -99,8 +100,8 @@ To compile a binary suitable to deploy to AWS Lambda, we will need to build on A
     * `sudo rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm`
     * Install the .NET 6 SDK
     * `sudo yum install dotnet-sdk-6.0`
-1. Install build dependencies
-    * `sudo yum -y install clang krb5-devel openssl-devel zip`
+1. Install Linux Build Dependencies (if not already installed in [Prerequisites](README.md#prerequisites))
+    * `sudo yum -y install clang krb5-devel openssl-devel zip llvm`
 1. Navigate into the directory that contains your csproj
 1. Do the publish (file will be built to bin/release/net6.0/linux-x64/native/)
     * `dotnet publish -r linux-x64 -c release --self-contained`
