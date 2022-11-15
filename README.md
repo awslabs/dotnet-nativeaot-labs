@@ -1,5 +1,8 @@
 # AWS NativeAOT for .NET
 
+## (Update) Check out the AWS blog with offical support for using Native AOT on Lambda:
+https://aws.amazon.com/blogs/compute/building-serverless-net-applications-on-aws-lambda-using-net-7/
+
 ## What is the goal of this repository?
 
 We want to use this repository to gather community feedback and questions about using NativeAOT for .NET on AWS, especially focused on Lambda. We also want to make this a place where developers can learn how to build with NativeAOT for .NET to run their own experiments with it on AWS.
