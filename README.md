@@ -1,7 +1,13 @@
-# AWS NativeAOT for .NET
 
-## (Update) Check out the AWS blog with offical support for using Native AOT on Lambda:
-https://aws.amazon.com/blogs/compute/building-serverless-net-applications-on-aws-lambda-using-net-7/
+# (Update) This repository is now archived.
+Please check out the links below for more updated information:
+* https://docs.aws.amazon.com/lambda/latest/dg/dotnet-native-aot.html
+* https://github.com/aws-samples/serverless-dotnet-demo
+* https://aws.amazon.com/blogs/compute/introducing-the-net-8-runtime-for-aws-lambda/
+* https://aws.amazon.com/blogs/compute/building-serverless-net-applications-on-aws-lambda-using-net-7/
+
+
+# AWS NativeAOT for .NET
 
 ## What is the goal of this repository?
 
